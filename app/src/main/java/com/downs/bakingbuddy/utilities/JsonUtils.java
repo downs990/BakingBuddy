@@ -15,7 +15,7 @@ public class JsonUtils {
 
     public static Recipe parseSandwichJson(String json) {
 
-        Recipe newSandwich = new Recipe();
+        Recipe newSandwich = new Recipe(0, null, null);
 
         try {
             JSONObject jsonObject = new JSONObject(json);
