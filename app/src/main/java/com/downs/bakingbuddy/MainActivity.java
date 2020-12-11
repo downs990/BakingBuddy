@@ -1,5 +1,6 @@
 package com.downs.bakingbuddy;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,9 @@ public class MainActivity extends AppCompatActivity
     private RecipeCardAdapter mAdapter;
     private RecyclerView mRecipeRecyclerView;
     private Toast mToast;
+    private RecipeCardAdapter.ListItemClickListener listItemListenerContext = this;
+    private Activity activityContext = this;
+    private ArrayList<Recipe> myRecipeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,19 +37,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        ArrayList<String> recipeTitles = new ArrayList<>();
-        recipeTitles.add("Recipe 1");
-        recipeTitles.add("Recipe 2");
-        recipeTitles.add("Recipe 3");
-        recipeTitles.add("Recipe 4");
-        recipeTitles.add("Recipe 5");
 
         mRecipeRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecipeRecyclerView.setLayoutManager(layoutManager);
-
-        mAdapter = new RecipeCardAdapter(this, recipeTitles);
-        mRecipeRecyclerView.setAdapter(mAdapter);
 
 
 
@@ -95,7 +88,8 @@ public class MainActivity extends AppCompatActivity
         if (mToast != null) {
             mToast.cancel();
         }
-        String toastMessage = "Item #" + clickedItemIndex + " clicked.";
+
+        String toastMessage = myRecipeList.get(clickedItemIndex).toString();
         mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
 
         mToast.show();
@@ -144,7 +138,15 @@ public class MainActivity extends AppCompatActivity
                 Log.d("RECIPE_RESULTS: ", recipeSearchResults);
 
                 ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
+                myRecipeList = recipeList;
 
+
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(activityContext);
+                mRecipeRecyclerView.setLayoutManager(layoutManager);
+
+                mAdapter = new RecipeCardAdapter(listItemListenerContext, activityContext, recipeList);
+                mRecipeRecyclerView.setAdapter(mAdapter);
 
             }
         }

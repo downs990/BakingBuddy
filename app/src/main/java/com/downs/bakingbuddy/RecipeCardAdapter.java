@@ -2,6 +2,7 @@ package com.downs.bakingbuddy;
 
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.downs.bakingbuddy.model.Recipe;
+
 import java.util.ArrayList;
 
 /**
@@ -30,7 +36,8 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
 
     final private ListItemClickListener mOnClickListener;
     private static int viewHolderCount;
-    private ArrayList<String> recipeTitlesList;
+    private ArrayList<Recipe> recipeList;
+    private Activity mActivityContext;
 
     /**
      * The interface that receives onClick messages.
@@ -45,9 +52,12 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
      *
      * @param listener Listener for list item clicks
      */
-    public RecipeCardAdapter(ListItemClickListener listener, ArrayList<String> recipeTitles) {
+    public RecipeCardAdapter(ListItemClickListener listener,
+                             Activity activityContext,
+                             ArrayList<Recipe> recipes) {
         mOnClickListener = listener;
-        recipeTitlesList = recipeTitles;
+        mActivityContext = activityContext;
+        recipeList = recipes;
         viewHolderCount = 0;
     }
 
@@ -71,7 +81,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         RecipeViewHolder viewHolder = new RecipeViewHolder(view);
 
-        viewHolder.recipeTitleTextView.setText(recipeTitlesList.get(viewHolderCount));
+        viewHolder.recipeTitleTextView.setText(recipeList.get(viewHolderCount).getName());
 
 
         viewHolderCount++;
@@ -104,7 +114,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
      */
     @Override
     public int getItemCount() {
-        return recipeTitlesList.size();
+        return recipeList.size();
     }
 
 
@@ -140,7 +150,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
          * @param listIndex Position of the item in the list
          */
         void bind(int listIndex) {
-            recipeTitleTextView.setText(recipeTitlesList.get(listIndex));
+            recipeTitleTextView.setText(recipeList.get(listIndex).getName());
         }
 
 
@@ -152,6 +162,10 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
         public void onClick(View v) {
             int clickedPosition = getAdapterPosition();
             mOnClickListener.onListItemClick(clickedPosition);
+
+//            Toast.makeText(mActivityContext,
+//                    recipeList.get(clickedPosition).toString(), Toast.LENGTH_LONG).show();
+
         }
     }
 }
