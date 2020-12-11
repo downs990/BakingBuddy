@@ -1,44 +1,55 @@
 package com.downs.bakingbuddy.utilities;
 
 import android.util.Log;
-
 import com.downs.bakingbuddy.model.Recipe;
-
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonUtils {
 
-    public static Recipe parseSandwichJson(String json) {
+    public static ArrayList<Recipe> parseRecipeJson(String json) {
 
-        Recipe newSandwich = new Recipe(0, null, null);
+
+        String recipeList = "{" + "\"my_recipes\":" + json + "}";
+
+        ArrayList<Recipe> recipesArrayList = new ArrayList<>();
+
 
         try {
-            JSONObject jsonObject = new JSONObject(json);
 
-            JSONObject innerObject = (JSONObject) jsonObject.get("name");
-            String mainName = (String) innerObject.get("mainName");
-            JSONArray aka = (JSONArray) innerObject.get("alsoKnownAs");
+            JSONObject jsonObject = new JSONObject(recipeList);
+            JSONArray jsonArray = jsonObject.getJSONArray("my_recipes");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                String currentRecipe = jsonArray.getString(i);
 
-            String placeOfOrigin = (String) jsonObject.get("placeOfOrigin");
-            String description = (String) jsonObject.get("description");
-            String image = (String) jsonObject.get("image");
-            JSONArray ingredients = (JSONArray) jsonObject.get("ingredients");
+                Gson gson = new Gson();
+                Recipe r = gson.fromJson(currentRecipe, Recipe.class);
+                recipesArrayList.add(r);
 
-
-            List<String> akaList = new ArrayList<>();
-            for(int i = 0; i < aka.length(); i++ ){
-                akaList.add( aka.get(i).toString() );
             }
+//            JSONObject jsonObject = new JSONObject(json);
+//            JSONArray recipesArray = (JSONArray) jsonObject.;
+//            JSONObject innerObject = (JSONObject) jsonObject.get("name");
+//            String mainName = (String) innerObject.get("mainName");
+//            JSONArray aka = (JSONArray) innerObject.get("alsoKnownAs");
+//            JSONArray ingredients = (JSONArray) jsonObject.get("ingredients");
 
-            List<String> ingredientsList = new ArrayList<>();
-            for (int i = 0; i < ingredients.length(); i++){
-                ingredientsList.add( ingredients.get(i).toString() );
-            }
+
+
+
+//            List<String> akaList = new ArrayList<>();
+//            for(int i = 0; i < aka.length(); i++ ){
+//                akaList.add( aka.get(i).toString() );
+//            }
+//
+//            List<String> ingredientsList = new ArrayList<>();
+//            for (int i = 0; i < ingredients.length(); i++){
+//                ingredientsList.add( ingredients.get(i).toString() );
+//            }
 
 //            newSandwich.setMainName(mainName);
 //            newSandwich.setAlsoKnownAs(akaList);
@@ -51,7 +62,7 @@ public class JsonUtils {
             Log.d("Error", err.toString());
         }
 
-        return newSandwich;
+        return recipesArrayList;
 
     }
 }

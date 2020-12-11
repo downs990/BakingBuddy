@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.downs.bakingbuddy.model.Recipe;
+import com.downs.bakingbuddy.utilities.JsonUtils;
 import com.downs.bakingbuddy.utilities.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +39,6 @@ public class MainActivity extends AppCompatActivity
         recipeTitles.add("Recipe 3");
         recipeTitles.add("Recipe 4");
         recipeTitles.add("Recipe 5");
-
 
         mRecipeRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -140,6 +142,10 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(String recipeSearchResults) {
             if (recipeSearchResults != null && !recipeSearchResults.equals("")) {
                 Log.d("RECIPE_RESULTS: ", recipeSearchResults);
+
+                ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
+
+
             }
         }
     }
