@@ -1,6 +1,6 @@
 package com.downs.bakingbuddy.model;
 
-class Ingredient{
+public class Ingredient{
     private double quantity = 0.0;
     private String measure;
     private String ingredient;

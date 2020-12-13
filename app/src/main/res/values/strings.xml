@@ -11,5 +11,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="test_recipe_title">My Recipe Title</string>
+    <string name="recipe_ingredients">Ingredients Go Here...</string>
+    <string name="test_recipe_step">My Recipe Step</string>
 
 </resources>

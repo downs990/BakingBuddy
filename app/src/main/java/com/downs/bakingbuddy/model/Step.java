@@ -2,7 +2,7 @@ package com.downs.bakingbuddy.model;
 
 
 
-class Step{
+public class Step{
     private int id = 0;
     private String shortDescription;
     private String description;
@@ -65,12 +65,13 @@ class Step{
 
     @Override
     public String toString() {
-        return "Step{" +
-                "id=" + id +
-                ", shortDescription='" + shortDescription + '\'' +
-                ", description='" + description + '\'' +
-                ", videoURL='" + videoURL + '\'' +
-                ", thumbnailURL='" + thumbnailURL + '\'' +
-                '}';
+        //  JSON FORMAT
+        return "{" +
+                "\"id\":" + id +
+                ", \"shortDescription\":\"" + shortDescription + "\"" +
+                ", \"description\":\"" + description + "\"" +
+                ", \"videoURL\":\"" + videoURL + "\"" +
+                ", \"thumbnailURL\":\"" + thumbnailURL + "\"" +
+                "}";
     }
 }

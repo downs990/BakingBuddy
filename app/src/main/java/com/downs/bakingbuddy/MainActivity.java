@@ -1,6 +1,7 @@
 package com.downs.bakingbuddy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.downs.bakingbuddy.model.Recipe;
 import com.downs.bakingbuddy.utilities.JsonUtils;
 import com.downs.bakingbuddy.utilities.NetworkUtils;
@@ -90,9 +90,15 @@ public class MainActivity extends AppCompatActivity
         }
 
         String toastMessage = myRecipeList.get(clickedItemIndex).toString();
-        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
+//        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
+//        mToast.show();
 
-        mToast.show();
+
+        Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
+        intent.putExtra("ingredients", myRecipeList.get(clickedItemIndex).getIngredients().toString());
+        intent.putExtra("steps", myRecipeList.get(clickedItemIndex).getSteps().toString());
+        startActivity(intent);
+
     }
 
 
