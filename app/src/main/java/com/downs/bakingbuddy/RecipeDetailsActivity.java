@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.downs.bakingbuddy.model.Ingredient;
+import com.downs.bakingbuddy.model.Recipe;
 import com.downs.bakingbuddy.model.Step;
 import com.downs.bakingbuddy.utilities.JsonUtils;
 import java.util.ArrayList;
@@ -28,21 +29,23 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         recipeStepRecyclerView = findViewById(R.id.recipe_step_descriptions_rv);
 
         Intent intent = getIntent();
-        String ingredientsJSONArray = "";
-        String recipeStepsJSOMArray = "";
+        String recipeSearchResults = "";
+        int clickedIndex = 0;
         if(intent != null){
-            ingredientsJSONArray = intent.getStringExtra("ingredients");
-            recipeStepsJSOMArray = intent.getStringExtra("steps");
+            recipeSearchResults = intent.getStringExtra("recipe_json_results");
+            clickedIndex = intent.getIntExtra("clicked_index", 0);
+
         }
 
 
-        // TODO: Fix mal-JSON issue. Currently all but the last recipe items have weird characters for units of measurements
-        //  that messes up the automatic JSON parsing.
-        ArrayList<Step> recipeSteps = JsonUtils.parseRecipeStepsJSONArray(recipeStepsJSOMArray);
-        ArrayList<Ingredient> recipeIngredients = JsonUtils.parseRecipeIngredientsJSONArray(ingredientsJSONArray);
+
+        ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
+
+        ArrayList<Ingredient> allIngredients = recipeList.get(clickedIndex).getIngredients();
+        ArrayList<Step> allSteps = recipeList.get(clickedIndex).getSteps();
 
 
-        ingredientsTextView.setText(ingredientsJSONArray);
+        ingredientsTextView.setText(allIngredients.toString());
 
 
 
@@ -50,7 +53,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recipeStepRecyclerView.setLayoutManager(layoutManager);
 
-        recipeStepAdapter = new RecipeStepAdapter(listenerContext, this, recipeSteps);
+        recipeStepAdapter = new RecipeStepAdapter(listenerContext, this, allSteps);
         recipeStepRecyclerView.setAdapter(recipeStepAdapter);
 
     }

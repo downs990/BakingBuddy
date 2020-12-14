@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     private Toast mToast;
     private RecipeCardAdapter.ListItemClickListener listItemListenerContext = this;
     private Activity activityContext = this;
-    private ArrayList<Recipe> myRecipeList;
+    private String myRecipeSearchResultsJSON;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +89,14 @@ public class MainActivity extends AppCompatActivity
             mToast.cancel();
         }
 
-        String toastMessage = myRecipeList.get(clickedItemIndex).toString();
-//        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
-//        mToast.show();
+
+        mToast = Toast.makeText(this, "index: "+clickedItemIndex, Toast.LENGTH_LONG);
+        mToast.show();
 
 
         Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
-        intent.putExtra("ingredients", myRecipeList.get(clickedItemIndex).getIngredients().toString());
-        intent.putExtra("steps", myRecipeList.get(clickedItemIndex).getSteps().toString());
+        intent.putExtra("recipe_json_results", myRecipeSearchResultsJSON);
+        intent.putExtra("clicked_index", clickedItemIndex);
         startActivity(intent);
 
     }
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d("RECIPE_RESULTS: ", recipeSearchResults);
 
                 ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
-                myRecipeList = recipeList;
+                myRecipeSearchResultsJSON = recipeSearchResults;
 
 
 
