@@ -105,11 +105,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
-
-
-
     /**
      * This method retrieves the search text from the EditText, constructs the
      * URL (using {@link NetworkUtils}) for the github repository you'd like to find, displays

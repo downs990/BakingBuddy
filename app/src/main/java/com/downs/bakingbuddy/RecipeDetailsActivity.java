@@ -19,6 +19,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     private RecyclerView recipeStepRecyclerView;
     private RecipeStepAdapter recipeStepAdapter;
     private RecipeStepAdapter.ListItemClickListener listenerContext = this;
+    private String recipeSearchResults = "";
+
+    private ArrayList<Step> allSteps = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,7 +32,6 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         recipeStepRecyclerView = findViewById(R.id.recipe_step_descriptions_rv);
 
         Intent intent = getIntent();
-        String recipeSearchResults = "";
         int clickedIndex = 0;
         if(intent != null){
             recipeSearchResults = intent.getStringExtra("recipe_json_results");
@@ -42,7 +44,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
 
         ArrayList<Ingredient> allIngredients = recipeList.get(clickedIndex).getIngredients();
-        ArrayList<Step> allSteps = recipeList.get(clickedIndex).getSteps();
+        allSteps = recipeList.get(clickedIndex).getSteps();
 
 
         ingredientsTextView.setText(allIngredients.toString());
@@ -60,6 +62,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
+
+        Intent intent = new Intent(RecipeDetailsActivity.this, StepDetailsActivity.class);
+        intent.putExtra("recipe_json_results",  recipeSearchResults);
+        intent.putExtra("clicked_recipe_step", allSteps.get(clickedItemIndex).toString());
+        startActivity(intent);
 
     }
 }

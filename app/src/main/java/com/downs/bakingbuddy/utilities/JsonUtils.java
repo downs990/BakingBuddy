@@ -20,7 +20,6 @@ public class JsonUtils{
         ArrayList<Recipe> recipes = new ArrayList<>();
 
         try {
-
             JSONObject jsonObject = new JSONObject(recipeStepsList);
 
             JSONArray jsonArray = jsonObject.getJSONArray(jsonListTitle);
