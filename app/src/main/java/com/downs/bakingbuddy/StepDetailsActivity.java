@@ -10,6 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.downs.bakingbuddy.model.Recipe;
+import com.downs.bakingbuddy.model.Step;
+import com.downs.bakingbuddy.utilities.JsonUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -23,16 +26,20 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import java.util.ArrayList;
+
 public class StepDetailsActivity extends AppCompatActivity implements
         View.OnClickListener{
 
     private static final String TAG = StepDetailsActivity.class.getSimpleName();
     private String recipeJSONResults = "";
-    private String clickedRecipeStepJSON = "";
+    private int clickedRecipeStepIndex = -1;
+    private int clickedRecipeIndex = -1;
     private SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
     private static MediaSession mMediaSession;
     private PlaybackState.Builder mStateBuilder;
+    private Step clickedStep;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,16 +51,19 @@ public class StepDetailsActivity extends AppCompatActivity implements
         Intent intent = getIntent();
         if(intent != null){
             recipeJSONResults = intent.getStringExtra("recipe_json_results");
-            clickedRecipeStepJSON = intent.getStringExtra("clicked_recipe_step");
+            clickedRecipeStepIndex = intent.getIntExtra("clicked_recipe_step_index", -1);
+            clickedRecipeIndex = intent.getIntExtra("clicked_recipe_index", -1);
 
         }
 
 
-
+        ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeJSONResults);
+        clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
+        String videoURL = clickedStep.getVideoURL();
 
 
         TextView test = findViewById(R.id.test_text_view);
-        test.setText(clickedRecipeStepJSON);
+        test.setText(clickedStep.toString());
 
 
         // Initialize the player view.
@@ -62,8 +72,11 @@ public class StepDetailsActivity extends AppCompatActivity implements
         // TODO: Get the Uri from the Steps[clickedIndex] passed into this Activity.
         // TODO: Update Udacity word google doc notes with ExoMedia player example.
         // TODO: Read ExoMediaPlayer's documentation.
+
+
+
         String testUri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4";
-        initializePlayer(Uri.parse(testUri));
+        initializePlayer(Uri.parse(videoURL));
     }
 
 
@@ -145,7 +158,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         releasePlayer();
-        mMediaSession.setActive(false);
+       // TODO: Add this      mMediaSession.setActive(false);
     }
 
 

@@ -20,6 +20,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     private RecipeStepAdapter recipeStepAdapter;
     private RecipeStepAdapter.ListItemClickListener listenerContext = this;
     private String recipeSearchResults = "";
+    private int recipeClickedIndex = -1;
 
     private ArrayList<Step> allSteps = new ArrayList<>();
 
@@ -32,10 +33,9 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         recipeStepRecyclerView = findViewById(R.id.recipe_step_descriptions_rv);
 
         Intent intent = getIntent();
-        int clickedIndex = 0;
         if(intent != null){
             recipeSearchResults = intent.getStringExtra("recipe_json_results");
-            clickedIndex = intent.getIntExtra("clicked_index", 0);
+            recipeClickedIndex = intent.getIntExtra("recipe_clicked_index", 0);
 
         }
 
@@ -43,8 +43,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
 
-        ArrayList<Ingredient> allIngredients = recipeList.get(clickedIndex).getIngredients();
-        allSteps = recipeList.get(clickedIndex).getSteps();
+        ArrayList<Ingredient> allIngredients = recipeList.get(recipeClickedIndex).getIngredients();
+        allSteps = recipeList.get(recipeClickedIndex).getSteps();
 
 
         ingredientsTextView.setText(allIngredients.toString());
@@ -65,7 +65,8 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
         Intent intent = new Intent(RecipeDetailsActivity.this, StepDetailsActivity.class);
         intent.putExtra("recipe_json_results",  recipeSearchResults);
-        intent.putExtra("clicked_recipe_step", allSteps.get(clickedItemIndex).toString());
+        intent.putExtra("clicked_recipe_step_index", clickedItemIndex);
+        intent.putExtra("clicked_recipe_index", recipeClickedIndex);
         startActivity(intent);
 
     }

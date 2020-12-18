@@ -94,9 +94,10 @@ public class MainActivity extends AppCompatActivity
         mToast.show();
 
 
+
         Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
         intent.putExtra("recipe_json_results", myRecipeSearchResultsJSON);
-        intent.putExtra("clicked_index", clickedItemIndex);
+        intent.putExtra("recipe_clicked_index", clickedItemIndex);
         startActivity(intent);
 
     }
