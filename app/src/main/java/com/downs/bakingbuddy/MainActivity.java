@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        mToast = Toast.makeText(this, "index: "+clickedItemIndex, Toast.LENGTH_LONG);
-        mToast.show();
+//        mToast = Toast.makeText(this, "index: "+clickedItemIndex, Toast.LENGTH_LONG);
+//        mToast.show();
 
 
 
@@ -141,13 +141,18 @@ public class MainActivity extends AppCompatActivity
 
                 ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
                 myRecipeSearchResultsJSON = recipeSearchResults;
+                ArrayList<Integer> recipeImages = new ArrayList<>();
+                recipeImages.add(R.drawable.baking1);
+                recipeImages.add(R.drawable.baking2);
+                recipeImages.add(R.drawable.baking3);
+                recipeImages.add(R.drawable.baking4);
 
 
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(activityContext);
                 mRecipeRecyclerView.setLayoutManager(layoutManager);
 
-                mAdapter = new RecipeCardAdapter(listItemListenerContext, activityContext, recipeList);
+                mAdapter = new RecipeCardAdapter(listItemListenerContext, activityContext, recipeList, recipeImages);
                 mRecipeRecyclerView.setAdapter(mAdapter);
 
             }

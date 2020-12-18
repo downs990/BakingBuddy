@@ -74,7 +74,7 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Re
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         RecipeStepViewHolder viewHolder = new RecipeStepViewHolder(view);
 
-        viewHolder.recipeStepTitleTextView.setText(recipeStepList.get(viewHolderCount).getDescription());
+        viewHolder.recipeStepTitleTextView.setText(recipeStepList.get(viewHolderCount).getShortDescription());
 
 
         viewHolderCount++;
@@ -138,7 +138,7 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Re
          * @param listIndex Position of the item in the list
          */
         void bind(int listIndex) {
-            recipeStepTitleTextView.setText(recipeStepList.get(listIndex).getDescription());
+            recipeStepTitleTextView.setText(recipeStepList.get(listIndex).getShortDescription());
         }
 
 

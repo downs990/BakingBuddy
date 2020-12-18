@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.downs.bakingbuddy.model.Ingredient;
@@ -28,6 +29,10 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
 
         ingredientsTextView = findViewById(R.id.recipe_ingredients_tv);
         recipeStepRecyclerView = findViewById(R.id.recipe_step_descriptions_rv);
@@ -44,12 +49,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
 
         ArrayList<Ingredient> allIngredients = recipeList.get(recipeClickedIndex).getIngredients();
+        String prettyIngredients = ingredientsToPrettyPrint(allIngredients);
+        ingredientsTextView.setText(prettyIngredients);
+
+
         allSteps = recipeList.get(recipeClickedIndex).getSteps();
-
-
-        ingredientsTextView.setText(allIngredients.toString());
-
-
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -69,5 +73,18 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         intent.putExtra("clicked_recipe_index", recipeClickedIndex);
         startActivity(intent);
 
+    }
+
+    private String ingredientsToPrettyPrint(ArrayList<Ingredient> currentIngredients){
+        String output = "";
+        for(Ingredient ing : currentIngredients){
+            String measure = ing.getMeasure();
+            if(measure.equals("UNIT")){
+                measure = "";
+            }
+            output += "   - " + ing.getQuantity() + " " + measure + " " + ing.getIngredient() + "\n\n";
+        }
+
+        return output;
     }
 }

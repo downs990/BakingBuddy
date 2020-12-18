@@ -37,6 +37,7 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
     final private ListItemClickListener mOnClickListener;
     private static int viewHolderCount;
     private ArrayList<Recipe> recipeList;
+    private ArrayList<Integer> recipeImagesList;
     private Activity mActivityContext;
 
     /**
@@ -54,10 +55,12 @@ public class RecipeCardAdapter extends RecyclerView.Adapter<RecipeCardAdapter.Re
      */
     public RecipeCardAdapter(ListItemClickListener listener,
                              Activity activityContext,
-                             ArrayList<Recipe> recipes) {
+                             ArrayList<Recipe> recipes,
+                             ArrayList<Integer> recipeImages) {
         mOnClickListener = listener;
         mActivityContext = activityContext;
         recipeList = recipes;
+        recipeImagesList = recipeImages;
         viewHolderCount = 0;
     }
 

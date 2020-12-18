@@ -63,19 +63,15 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
 
         TextView test = findViewById(R.id.test_text_view);
-        test.setText(clickedStep.toString());
+        test.setText(clickedStep.getDescription());
 
 
         // Initialize the player view.
         mPlayerView = findViewById(R.id.simple_exo_view);
 
-        // TODO: Get the Uri from the Steps[clickedIndex] passed into this Activity.
         // TODO: Update Udacity word google doc notes with ExoMedia player example.
         // TODO: Read ExoMediaPlayer's documentation.
-
-
-
-        String testUri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4";
+//        String testUri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4";
         initializePlayer(Uri.parse(videoURL));
     }
 
