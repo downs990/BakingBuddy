@@ -52,6 +52,7 @@
         android:textColor="@color/colorPrimary"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:onClick="displayPreviousStep"
         />
 
     <TextView
@@ -65,5 +66,6 @@
         android:textColor="@color/colorPrimary"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:onClick="displayNextStep"
         />
 </RelativeLayout>

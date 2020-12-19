@@ -33,13 +33,17 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
     private static final String TAG = StepDetailsActivity.class.getSimpleName();
     private String recipeJSONResults = "";
+
     private int clickedRecipeStepIndex = -1;
     private int clickedRecipeIndex = -1;
+    private Step clickedStep;
+
     private SimpleExoPlayerView mPlayerView;
     private SimpleExoPlayer mExoPlayer;
     private static MediaSession mMediaSession;
     private PlaybackState.Builder mStateBuilder;
-    private Step clickedStep;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,11 +60,15 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
         }
 
+        loadInterfaceComponents();
+
+    }
+
+    private void loadInterfaceComponents(){
 
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeJSONResults);
         clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
         String videoURL = clickedStep.getVideoURL();
-
 
         TextView test = findViewById(R.id.test_text_view);
         test.setText(clickedStep.getDescription());
@@ -71,10 +79,21 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
         // TODO: Update Udacity word google doc notes with ExoMedia player example.
         // TODO: Read ExoMediaPlayer's documentation.
-//        String testUri = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffd974_-intro-creampie/-intro-creampie.mp4";
         initializePlayer(Uri.parse(videoURL));
     }
 
+
+
+    public void displayPreviousStep(View view){
+        clickedRecipeStepIndex = clickedRecipeStepIndex - 1;
+        loadInterfaceComponents();
+
+    }
+
+    public void displayNextStep(View view){
+        clickedRecipeStepIndex = clickedRecipeStepIndex + 1;
+        loadInterfaceComponents();
+    }
 
 
     /**
@@ -82,6 +101,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
      * @param mediaUri The URI of the sample to play.
      */
     private void initializePlayer(Uri mediaUri) {
+
         if (mExoPlayer == null) {
             // Create an instance of the ExoPlayer.
             TrackSelector trackSelector = new DefaultTrackSelector();
@@ -89,6 +109,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
 
+            // TODO: Fix the issue, if you click previous button from video 1 it crashes.
             // TODO: Set the ExoPlayer.EventListener to this activity?
             //mExoPlayer.addListener(this);
 
@@ -98,6 +119,10 @@ public class StepDetailsActivity extends AppCompatActivity implements
                     this, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+        }else{
+
+            releasePlayer();
+            initializePlayer(mediaUri);
         }
     }
 
@@ -107,33 +132,33 @@ public class StepDetailsActivity extends AppCompatActivity implements
      */
     private void initializeMediaSession() {
 
-        // Create a MediaSessionCompat.
-        mMediaSession = new MediaSession(this, TAG);
-
-        // Enable callbacks from MediaButtons and TransportControls.
-        mMediaSession.setFlags(
-                MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-                        MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
-        // Do not let MediaButtons restart the player when the app is not visible.
-        mMediaSession.setMediaButtonReceiver(null);
-
-        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
-        mStateBuilder = new PlaybackState.Builder()
-                .setActions(
-                        PlaybackState.ACTION_PLAY |
-                                PlaybackState.ACTION_PAUSE |
-                                PlaybackState.ACTION_SKIP_TO_PREVIOUS |
-                                PlaybackState.ACTION_PLAY_PAUSE);
-
-        mMediaSession.setPlaybackState(mStateBuilder.build());
-
-
-        // MySessionCallback has methods that handle callbacks from a media controller.
-        mMediaSession.setCallback(new MySessionCallback());
-
-        // Start the Media Session since the activity is active.
-        mMediaSession.setActive(true);
+//        // Create a MediaSessionCompat.
+//        mMediaSession = new MediaSession(this, TAG);
+//
+//        // Enable callbacks from MediaButtons and TransportControls.
+//        mMediaSession.setFlags(
+//                MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+//                        MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+//
+//        // Do not let MediaButtons restart the player when the app is not visible.
+//        mMediaSession.setMediaButtonReceiver(null);
+//
+//        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
+//        mStateBuilder = new PlaybackState.Builder()
+//                .setActions(
+//                        PlaybackState.ACTION_PLAY |
+//                                PlaybackState.ACTION_PAUSE |
+//                                PlaybackState.ACTION_SKIP_TO_PREVIOUS |
+//                                PlaybackState.ACTION_PLAY_PAUSE);
+//
+//        mMediaSession.setPlaybackState(mStateBuilder.build());
+//
+//
+//        // MySessionCallback has methods that handle callbacks from a media controller.
+//        mMediaSession.setCallback(new MySessionCallback());
+//
+//        // Start the Media Session since the activity is active.
+//        mMediaSession.setActive(true);
 
     }
 
