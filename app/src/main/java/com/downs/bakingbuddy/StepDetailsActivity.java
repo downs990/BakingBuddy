@@ -56,6 +56,11 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private SimpleExoPlayer mExoPlayer;
 
 
+    // TODO: Required to add data binding. (third-party library)
+    // TODO: Handle No video content with a message.
+    // TODO: Add Retrofit instead of HttpURLConnection. (learning opportunity)
+    // TODO: Add Espresso UI testing.
+    // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,8 +98,6 @@ public class StepDetailsActivity extends AppCompatActivity implements
         // Initialize the media player view.
         mPlayerView = findViewById(R.id.simple_exo_view);
 
-        // TODO: Update Udacity word google doc notes with ExoMedia player example.
-        // TODO: Read ExoMediaPlayer's documentation.
         initializePlayer(Uri.parse(videoURL));
     }
 
@@ -193,7 +196,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         releasePlayer();
-       // TODO: Add this      mMediaSession.setActive(false);
+       // TODO: Add this to fix the destroy issue?      mMediaSession.setActive(false);
     }
 
 
