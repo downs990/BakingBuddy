@@ -2,14 +2,14 @@ package com.downs.bakingbuddy.model;
 
 import java.util.ArrayList;
 
-public class Recipe {
+public class Recipe {// TODO: implements Parcelable for all models? Easy gson conversion?
 
     private int id = 0;
     private String name;
     private ArrayList<Ingredient> ingredients;
     private ArrayList<Step> steps;
     private int servings = 0;
-    private String image;
+    private String image; // TODO: Use picasso to load these in main RecyclerView.
 
     public Recipe(){
 

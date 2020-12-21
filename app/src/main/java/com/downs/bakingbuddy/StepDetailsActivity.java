@@ -1,12 +1,17 @@
 package com.downs.bakingbuddy;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.media.session.MediaButtonReceiver;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,13 +19,18 @@ import com.downs.bakingbuddy.model.Recipe;
 import com.downs.bakingbuddy.model.Step;
 import com.downs.bakingbuddy.utilities.JsonUtils;
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -29,7 +39,7 @@ import com.google.android.exoplayer2.util.Util;
 import java.util.ArrayList;
 
 public class StepDetailsActivity extends AppCompatActivity implements
-        View.OnClickListener{
+        View.OnClickListener, ExoPlayer.EventListener{
 
     private static final String TAG = StepDetailsActivity.class.getSimpleName();
     private String recipeJSONResults = "";
@@ -38,11 +48,12 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private int clickedRecipeIndex = -1;
     private Step clickedStep;
 
-    private SimpleExoPlayerView mPlayerView;
-    private SimpleExoPlayer mExoPlayer;
     private static MediaSession mMediaSession;
     private PlaybackState.Builder mStateBuilder;
 
+
+    private SimpleExoPlayerView mPlayerView;
+    private SimpleExoPlayer mExoPlayer;
 
 
     @Override
@@ -60,6 +71,11 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
         }
 
+
+        // Initialize the Media Session.
+        initializeMediaSession();
+
+        // Populate text and video.
         loadInterfaceComponents();
 
     }
@@ -74,7 +90,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
         test.setText(clickedStep.getDescription());
 
 
-        // Initialize the player view.
+        // Initialize the media player view.
         mPlayerView = findViewById(R.id.simple_exo_view);
 
         // TODO: Update Udacity word google doc notes with ExoMedia player example.
@@ -96,6 +112,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
     }
 
 
+    // TODO: Fix the issue, if you click previous button from video 1 it crashes.
     /**
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.
@@ -108,10 +125,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
             mPlayerView.setPlayer(mExoPlayer);
-
-            // TODO: Fix the issue, if you click previous button from video 1 it crashes.
-            // TODO: Set the ExoPlayer.EventListener to this activity?
-            //mExoPlayer.addListener(this);
+            mExoPlayer.addListener(this);
 
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(this, "BackingBuddy");
@@ -132,33 +146,33 @@ public class StepDetailsActivity extends AppCompatActivity implements
      */
     private void initializeMediaSession() {
 
-//        // Create a MediaSessionCompat.
-//        mMediaSession = new MediaSession(this, TAG);
-//
-//        // Enable callbacks from MediaButtons and TransportControls.
-//        mMediaSession.setFlags(
-//                MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-//                        MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-//
-//        // Do not let MediaButtons restart the player when the app is not visible.
-//        mMediaSession.setMediaButtonReceiver(null);
-//
-//        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
-//        mStateBuilder = new PlaybackState.Builder()
-//                .setActions(
-//                        PlaybackState.ACTION_PLAY |
-//                                PlaybackState.ACTION_PAUSE |
-//                                PlaybackState.ACTION_SKIP_TO_PREVIOUS |
-//                                PlaybackState.ACTION_PLAY_PAUSE);
-//
-//        mMediaSession.setPlaybackState(mStateBuilder.build());
-//
-//
-//        // MySessionCallback has methods that handle callbacks from a media controller.
-//        mMediaSession.setCallback(new MySessionCallback());
-//
-//        // Start the Media Session since the activity is active.
-//        mMediaSession.setActive(true);
+        // Create a MediaSessionCompat.
+        mMediaSession = new MediaSession(this, TAG);
+
+        // Enable callbacks from MediaButtons and TransportControls.
+        mMediaSession.setFlags(
+                MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+                        MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        // Do not let MediaButtons restart the player when the app is not visible.
+        mMediaSession.setMediaButtonReceiver(null);
+
+        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
+        mStateBuilder = new PlaybackState.Builder()
+                .setActions(
+                        PlaybackState.ACTION_PLAY |
+                                PlaybackState.ACTION_PAUSE |
+                                PlaybackState.ACTION_SKIP_TO_PREVIOUS |
+                                PlaybackState.ACTION_PLAY_PAUSE);
+
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+
+
+        // MySessionCallback has methods that handle callbacks from a media controller.
+        mMediaSession.setCallback(new MySessionCallback());
+
+        // Start the Media Session since the activity is active.
+        mMediaSession.setActive(true);
 
     }
 
@@ -188,7 +202,42 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
 
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady){
+            mStateBuilder.setState(PlaybackState.STATE_PLAYING,
+                    mExoPlayer.getCurrentPosition(), 1f);
+        } else if((playbackState == ExoPlayer.STATE_READY)){
+            mStateBuilder.setState(PlaybackState.STATE_PAUSED,
+                    mExoPlayer.getCurrentPosition(), 1f);
+        }
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
 
 
     /**
@@ -210,4 +259,6 @@ public class StepDetailsActivity extends AppCompatActivity implements
             mExoPlayer.seekTo(0);
         }
     }
+
+
 }
