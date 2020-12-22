@@ -1,5 +1,8 @@
 package com.downs.bakingbuddy.model;
 
+
+// TODO: implements Parcelable for all models? to make it easier to directly convert their json
+//    to their POJOs
 public class Ingredient{
     private double quantity = 0.0;
     private String measure;

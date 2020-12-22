@@ -100,7 +100,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
     }
 
-    // TODO: use this instead of shared preferences, when you figure out how.
+    // TODO: Only use saveInstanceState() instead of shared preferences, when you figure out how.
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
