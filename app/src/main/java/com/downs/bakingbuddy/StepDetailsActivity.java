@@ -1,17 +1,16 @@
 package com.downs.bakingbuddy;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.media.session.MediaButtonReceiver;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -52,19 +51,30 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private PlaybackState.Builder mStateBuilder;
 
 
-    private SimpleExoPlayerView mPlayerView;
-    private SimpleExoPlayer mExoPlayer;
+    private SimpleExoPlayerView mPlayerView; // Media Controller
+    private SimpleExoPlayer mExoPlayer;// Media Player
+
+    private boolean playerState;
+    private long playerPosition;
 
 
-    // TODO: Required to add data binding. (third-party library)
+    SharedPreferences sharedPref;
+    private String SAVED_STEP_INDEX = "saved_recipe_step_index";
+    private String SAVED_RECIPE_INDEX = "saved_recipe_index";
+
+    // TODO: Required to add data binding. (third-party library) also (update notes on this)
     // TODO: Handle No video content with a message.
     // TODO: Add Retrofit instead of HttpURLConnection. (learning opportunity)
     // TODO: Add Espresso UI testing.
+    // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_details);
+
+
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
 
 
@@ -76,12 +86,29 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
         }
 
+        if(savedInstanceState != null){
+            clickedRecipeStepIndex = savedInstanceState.getInt(SAVED_STEP_INDEX);
+            clickedRecipeIndex = savedInstanceState.getInt(SAVED_RECIPE_INDEX);
+        }
+
 
         // Initialize the Media Session.
         initializeMediaSession();
 
         // Populate text and video.
         loadInterfaceComponents();
+
+    }
+
+    // TODO: use this instead of shared preferences, when you figure out how.
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // helps with app rotation to keep activity loaded with correct video
+        //   when onResume() gets called.
+        outState.putInt(SAVED_STEP_INDEX, clickedRecipeStepIndex);
+        outState.putInt(SAVED_RECIPE_INDEX, clickedRecipeIndex);
 
     }
 
@@ -98,7 +125,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
         // Initialize the media player view.
         mPlayerView = findViewById(R.id.simple_exo_view);
 
-        initializePlayer(Uri.parse(videoURL));
+        initializeMediaPlayer(Uri.parse(videoURL));
     }
 
 
@@ -120,7 +147,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.
      */
-    private void initializePlayer(Uri mediaUri) {
+    private void initializeMediaPlayer(Uri mediaUri) {
 
         if (mExoPlayer == null) {
             // Create an instance of the ExoPlayer.
@@ -136,10 +163,11 @@ public class StepDetailsActivity extends AppCompatActivity implements
                     this, userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+
         }else{
 
             releasePlayer();
-            initializePlayer(mediaUri);
+            initializeMediaPlayer(mediaUri);
         }
     }
 
@@ -184,20 +212,80 @@ public class StepDetailsActivity extends AppCompatActivity implements
      * Release ExoPlayer.
      */
     private void releasePlayer() {
-        mExoPlayer.stop();
-        mExoPlayer.release();
+
+        // Before releasing the player you must save the position and the state.
+        // TODO: Add this solution to your Google drive notes.
+        if(mExoPlayer != null){
+            playerState = mExoPlayer.getPlayWhenReady();
+            playerPosition = mExoPlayer.getCurrentPosition();
+
+            mExoPlayer.stop();
+            mExoPlayer.release();
+
+            SharedPreferences.Editor editor = sharedPref.edit();
+            // video state values
+            editor.putBoolean("play_when_ready", playerState);
+            editor.putLong("player_position", playerPosition);
+
+            // which video those states are for
+            editor.putInt("recipe_index", clickedRecipeIndex);
+            editor.putInt("recipe_step_index", clickedRecipeStepIndex);
+
+            editor.apply();
+        }
+
         mExoPlayer = null;
+        // TODO: Add this???     mMediaSession.setActive(false);
+
+    }
+
+
+    /**
+     * Before API Level 24 there is no guarantee of onStop() being called. So
+     * we have to release the player as early as possible in onPause().
+     */
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
     }
 
     /**
-     * Release the player when the activity is destroyed.
+     * Starting with API Level 24 (which brought multi and split window mode)
+     * onStop() is guaranteed to be called and in the pause mode our activity
+     * is evetually still visible. Hence we need to wait releasing until onStop()
      */
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
-       // TODO: Add this to fix the destroy issue?      mMediaSession.setActive(false);
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
     }
+
+    /**
+     * Pick back up where you left off in the MediaPlayer.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean savedPlayWhenReady = sharedPref.getBoolean("play_when_ready", false);
+        long savedPlayerPositon = sharedPref.getLong("player_position", 0);
+
+
+        int savedRecipeIndex = sharedPref.getInt("recipe_index", -1);
+        int savedRecipeStepIndex = sharedPref.getInt("recipe_step_index", -1);
+
+            if(savedPlayWhenReady
+                    && clickedRecipeIndex == savedRecipeIndex
+                    && clickedRecipeStepIndex == savedRecipeStepIndex){
+                mExoPlayer.seekTo(savedPlayerPositon);
+            }
+    }
+
 
 
     @Override
