@@ -29,8 +29,7 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
 
 
@@ -62,6 +61,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         recipeStepAdapter = new RecipeStepAdapter(listenerContext, this, allSteps);
         recipeStepRecyclerView.setAdapter(recipeStepAdapter);
 
+
+        String clickedRecipeName = recipeList.get(recipeClickedIndex).getName();
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(clickedRecipeName);
+        setSupportActionBar(toolbar);
     }
 
     @Override

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        mRecipeRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mRecipeRecyclerView = findViewById(R.id.recycler_view);
 
 
 

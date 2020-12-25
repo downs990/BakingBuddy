@@ -62,12 +62,13 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private String SAVED_STEP_INDEX = "saved_recipe_step_index";
     private String SAVED_RECIPE_INDEX = "saved_recipe_index";
 
-    // TODO: Required to add data binding. (third-party library) also (update notes on this)
-    // TODO: Handle No video content with a message.
-    // TODO: Add Retrofit instead of HttpURLConnection. (learning opportunity)
     // TODO: Add Espresso UI testing.
+    // TODO: Handle No video content with a message.
+    // TODO: Required to add data binding. (third-party library) also (update notes on this)
+    // TODO: Add Retrofit instead of HttpURLConnection. (learning opportunity)
     // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
+    // TODO: Tablet layouts.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
