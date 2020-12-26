@@ -1,8 +1,14 @@
 package com.downs.bakingbuddy;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +23,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
 @RunWith(AndroidJUnit4.class)
-public class MenuActivityScreenTest {
+public class MainActivityScreenTest {
 
     public static final String RECIPE_NAME = "Nutella Pie";
+    private IdlingResource mIdlingResource;
 
     /**
      * The ActivityTestRule is a rule provided by Android used for functional testing of a single
@@ -33,8 +40,30 @@ public class MenuActivityScreenTest {
 
 
     /**
-     //     * Clicks on a RecyclerView item and checks it opens up the StepDetailsActivity with the correct details.
-     //     */
+     * Whatever happens in the @Before method happens after what happens in the
+     * MainActivity's onCreate().
+     */
+    @Before
+    public void registerIdlingResource() {
+        // Get access to and launch the activity.
+        ActivityScenario activityScenario = ActivityScenario.launch(MainActivity.class);
+
+        // Provides a thread-safe mechanism to access the activity.
+        activityScenario.onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
+            @Override
+            public void perform(MainActivity activity) {
+                mIdlingResource = activity.getIdlingResource();
+                // To prove that the test fails, omit this call:
+                IdlingRegistry.getInstance().register(mIdlingResource);
+            }
+        });
+    }
+
+    /**
+     *
+     * Clicks on a RecyclerView item and checks it opens up the StepDetailsActivity
+     * with the correct details.
+     */
     @Test
     public void clickGridViewItem_OpensRecipeDetailsActivity() {
 
@@ -50,6 +79,16 @@ public class MenuActivityScreenTest {
         onView(withId(R.id.recipe_title_tv)).check(matches(withText(RECIPE_NAME)));
     }
 
+    /**
+     * After the test happens you want to properly unregister the idling resource
+     * in a safe way.
+     */
+    @After
+    public void unregisterIdlingResource() {
+        if (mIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(mIdlingResource);
+        }
+    }
 
 
 
