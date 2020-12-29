@@ -19,6 +19,8 @@
     <string name="step_description_title">Step Description</string>
     <string name="prev_title">Previous</string>
     <string name="next_title">Next</string>
+    <string name="no_video_message">No Video Available...</string>
+
 
 
 </resources>

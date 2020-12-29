@@ -154,10 +154,10 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
                 myRecipeSearchResultsJSON = recipeSearchResults;
                 ArrayList<Integer> recipeImages = new ArrayList<>();
-                recipeImages.add(R.drawable.baking1);
-                recipeImages.add(R.drawable.baking2);
-                recipeImages.add(R.drawable.baking3);
-                recipeImages.add(R.drawable.baking4);
+//                recipeImages.add(R.drawable.baking1);
+//                recipeImages.add(R.drawable.baking2);
+//                recipeImages.add(R.drawable.baking3);
+//                recipeImages.add(R.drawable.baking4);
 
 
 

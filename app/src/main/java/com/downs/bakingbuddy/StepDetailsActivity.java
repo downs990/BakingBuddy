@@ -62,8 +62,11 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private String SAVED_STEP_INDEX = "saved_recipe_step_index";
     private String SAVED_RECIPE_INDEX = "saved_recipe_index";
 
+
+    private TextView noVideoMessage;
+
+
     // TODO: Add Espresso UI testing.
-    // TODO: Handle No video content with a message.
     // TODO: Required to add data binding. (third-party library) also (update notes on this)
     // TODO: Add Retrofit instead of HttpURLConnection. (learning opportunity)
     // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
@@ -76,6 +79,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        noVideoMessage = findViewById(R.id.no_video_tv);
 
 
 
@@ -125,6 +129,13 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
         // Initialize the media player view.
         mPlayerView = findViewById(R.id.simple_exo_view);
+        mPlayerView.setVisibility(View.VISIBLE);
+        noVideoMessage.setVisibility(View.GONE);
+
+        if(videoURL.equals("")){
+            mPlayerView.setVisibility(View.GONE);
+            noVideoMessage.setVisibility(View.VISIBLE);
+        }
 
         initializeMediaPlayer(Uri.parse(videoURL));
     }
@@ -144,6 +155,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
 
     // TODO: Fix the issue, if you click previous button from video 1 it crashes.
+    // TODO: Fix the issue, if you click next button on last step, the app crashes.
     /**
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.

@@ -13,19 +13,33 @@
         android:layout_height="310dp"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
+        android:visibility="gone"
         />
-
 
 
     <TextView
-        android:id="@+id/description_title"
+        android:id="@+id/no_video_tv"
         android:layout_below="@+id/simple_exo_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/step_description_title"
-        android:textSize="19sp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/no_video_message"
+        android:textColor="#ccc"
+        android:textSize="25sp"
         />
+
+    <TextView
+        android:id="@+id/description_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/no_video_tv"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/step_description_title"
+        android:textSize="19sp" />
 
 
     <TextView

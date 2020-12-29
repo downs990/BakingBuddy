@@ -73,9 +73,8 @@ public class MainActivityScreenTest {
 
         // Checks that the RecipeDetailsActivity opens with the correct recipe name displayed
 
-        // TODO: You need to use an ideling resource on this recycler view because it's loading data from web.
-        // TODO: How to check the .title() property of a "toolbar"?
-//        onView(withId(R.id.toolbar)).check(matches(withText(RECIPE_NAME)));
+        // TODO: You need to use an idling resource on this recycler view because it's loading data from web.
+//        onView(withId(R.id.toolbar)).check(matches(withText(RECIPE_NAME)));      // NOTE: How to check the .title() property of a "toolbar"?
         onView(withId(R.id.recipe_title_tv)).check(matches(withText(RECIPE_NAME)));
     }
 
