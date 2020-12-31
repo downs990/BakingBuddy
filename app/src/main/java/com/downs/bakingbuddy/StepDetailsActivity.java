@@ -8,12 +8,13 @@ import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
+import com.downs.bakingbuddy.databinding.ActivityStepDetailsBinding;
 import com.downs.bakingbuddy.model.Recipe;
 import com.downs.bakingbuddy.model.Step;
 import com.downs.bakingbuddy.utilities.JsonUtils;
@@ -31,7 +32,6 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -51,7 +51,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private PlaybackState.Builder mStateBuilder;
 
 
-    private SimpleExoPlayerView mPlayerView; // Media Controller
+    //private SimpleExoPlayerView mPlayerView; // Media Controller
     private SimpleExoPlayer mExoPlayer;// Media Player
 
     private boolean playerState;
@@ -63,10 +63,10 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private String SAVED_RECIPE_INDEX = "saved_recipe_index";
 
 
-    private TextView noVideoMessage;
+//    private TextView noVideoMessage;
+    ActivityStepDetailsBinding mBinding;
 
 
-    // TODO: Required to add data binding. (third-party library) also (update notes on this)
     // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
     // TODO: Tablet layouts.
@@ -77,8 +77,13 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
 
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        noVideoMessage = findViewById(R.id.no_video_tv);
 
+        /*
+         * DataBindUtil.setContentView replaces our normal call of setContent view.
+         * DataBindingUtil also created our ActivityStepDetailsBinding that we will eventually use to
+         * display all of our data.
+         */
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_step_details);
 
 
         Intent intent = getIntent();
@@ -129,18 +134,19 @@ public class StepDetailsActivity extends AppCompatActivity implements
             clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
             String videoURL = clickedStep.getVideoURL();
 
-            TextView test = findViewById(R.id.test_text_view);
-            test.setText(clickedStep.getDescription());
+//            TextView test = findViewById(R.id.test_text_view);
+            mBinding.testTextView.setText(clickedStep.getDescription());
 
 
             // Initialize the media player view.
-            mPlayerView = findViewById(R.id.simple_exo_view);
-            mPlayerView.setVisibility(View.VISIBLE);
-            noVideoMessage.setVisibility(View.GONE);
+//            mPlayerView = findViewById(R.id.simple_exo_view);
+//            noVideoMessage = findViewById(R.id.no_video_tv);
+            mBinding.simpleExoView.setVisibility(View.VISIBLE);
+            mBinding.noVideoTv.setVisibility(View.GONE);
 
             if (videoURL.equals("")) {
-                mPlayerView.setVisibility(View.GONE);
-                noVideoMessage.setVisibility(View.VISIBLE);
+                mBinding.simpleExoView.setVisibility(View.GONE);
+                mBinding.noVideoTv.setVisibility(View.VISIBLE);
             }
 
             initializeMediaPlayer(Uri.parse(videoURL));
@@ -172,7 +178,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
+            mBinding.simpleExoView.setPlayer(mExoPlayer);
             mExoPlayer.addListener(this);
 
             // Prepare the MediaSource.
