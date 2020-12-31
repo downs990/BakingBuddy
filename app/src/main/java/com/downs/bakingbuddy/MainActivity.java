@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity
     private String myRecipeSearchResultsJSON;
 
     // The Idling Resource which will be null in production, but not for testing.
-    @Nullable
-    private SimpleIdlingResource mIdlingResource;
+//    @Nullable
+//    private SimpleIdlingResource mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity
         makeRecipeSearchQuery();
 
 
+        // Get the IdlingResource instance
+        // getIdlingResource();
     }
 
     @Override
@@ -174,14 +176,14 @@ public class MainActivity extends AppCompatActivity
     /**
      * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
      */
-    @VisibleForTesting
-    @NonNull
-    public IdlingResource getIdlingResource() {
-        if (mIdlingResource == null) {
-            mIdlingResource = new SimpleIdlingResource();
-        }
-        return mIdlingResource;
-    }
+//    @VisibleForTesting
+//    @NonNull
+//    public IdlingResource getIdlingResource() {
+//        if (mIdlingResource == null) {
+//            mIdlingResource = new SimpleIdlingResource();
+//        }
+//        return mIdlingResource;
+//    }
 
 
 

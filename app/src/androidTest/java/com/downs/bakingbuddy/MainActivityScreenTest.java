@@ -1,12 +1,20 @@
 package com.downs.bakingbuddy;
 
-import androidx.appcompat.widget.Toolbar;
+
+import android.view.View;
+import android.widget.TextView;
+
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -14,18 +22,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onData;
-import static org.hamcrest.Matchers.anything;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
 
+import androidx.test.espresso.contrib.RecyclerViewActions;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityScreenTest {
 
-    public static final String RECIPE_NAME = "Nutella Pie";
+    public static final int RECIPE_INDEX_1 = 0;
+    public static final String RECIPE_NAME_1 = "Nutella Pie";
+
+    public static final int RECIPE_INDEX_2 = 1;
+    public static final String RECIPE_NAME_2 = "Brownies";
+
+
     private IdlingResource mIdlingResource;
 
     /**
@@ -43,21 +60,27 @@ public class MainActivityScreenTest {
      * Whatever happens in the @Before method happens after what happens in the
      * MainActivity's onCreate().
      */
-    @Before
-    public void registerIdlingResource() {
-        // Get access to and launch the activity.
-        ActivityScenario activityScenario = ActivityScenario.launch(MainActivity.class);
+//    @Before
+//    public void registerIdlingResource() {
+//        // Get access to and launch the activity.
+//        ActivityScenario activityScenario = ActivityScenario.launch(MainActivity.class);
+//
+//        // Provides a thread-safe mechanism to access the activity.
+//        activityScenario.onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
+//            @Override
+//            public void perform(MainActivity activity) {
+//                mIdlingResource = activity.getIdlingResource();
+//                // To prove that the test fails, omit this call:
+//                IdlingRegistry.getInstance().register(mIdlingResource);
+//            }
+//        });
 
-        // Provides a thread-safe mechanism to access the activity.
-        activityScenario.onActivity(new ActivityScenario.ActivityAction<MainActivity>() {
-            @Override
-            public void perform(MainActivity activity) {
-                mIdlingResource = activity.getIdlingResource();
-                // To prove that the test fails, omit this call:
-                IdlingRegistry.getInstance().register(mIdlingResource);
-            }
-        });
-    }
+
+    // // SOLUTION #2
+//        mIdlingResource = mActivityTestRule.getActivity().getIdlingResource();
+//        // To prove that the test fails, omit this call:
+//        IdlingRegistry.getInstance().register(mIdlingResource);
+//    }
 
     /**
      *
@@ -65,29 +88,37 @@ public class MainActivityScreenTest {
      * with the correct details.
      */
     @Test
-    public void clickGridViewItem_OpensRecipeDetailsActivity() {
+    public void clickRecyclerViewItem_OpensRecipeDetailsActivity() {
 
-        // Uses {@link Espresso#onData(org.hamcrest.Matcher)} to get a reference to a specific
-        // recyclerview item and clicks it.
-        onData(anything()).inAdapterView(withId(R.id.recycler_view)).atPosition(0).perform(click());
+        // IMPORTANT: *******************************************************
+        // If the run device is in lock mode, and/or activity inactive,
+        // will trigger this error "NoActivityResumedException: No activities in stage RESUMED".
+        // Make sure your device is unlocked and app/test is able to run in foreground!
+        // ******************************************************************
 
-        // Checks that the RecipeDetailsActivity opens with the correct recipe name displayed
 
-        // TODO: You need to use an idling resource on this recycler view because it's loading data from web.
-//        onView(withId(R.id.toolbar)).check(matches(withText(RECIPE_NAME)));      // NOTE: How to check the .title() property of a "toolbar"?
-        onView(withId(R.id.recipe_title_tv)).check(matches(withText(RECIPE_NAME)));
+        // Click the first item in the RecyclerView.
+        onView(withId(R.id.recycler_view))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(RECIPE_INDEX_1, click()));
+
+
+        // Checks the title value of the RecipeDetailsActivity's toolbar.
+        onView(allOf(instanceOf(TextView.class), withParent(withId(R.id.toolbar))))
+                .check(matches(withText(RECIPE_NAME_1)));
     }
 
     /**
      * After the test happens you want to properly unregister the idling resource
      * in a safe way.
      */
-    @After
-    public void unregisterIdlingResource() {
-        if (mIdlingResource != null) {
-            IdlingRegistry.getInstance().unregister(mIdlingResource);
-        }
-    }
+//    @After
+//    public void unregisterIdlingResource() {
+//        if (mIdlingResource != null) {
+//            IdlingRegistry.getInstance().unregister(mIdlingResource);
+//        }
+//    }
+
+
 
 
 

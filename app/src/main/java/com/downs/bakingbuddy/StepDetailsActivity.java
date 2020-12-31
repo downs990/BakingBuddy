@@ -68,7 +68,6 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
     // TODO: Add Espresso UI testing.
     // TODO: Required to add data binding. (third-party library) also (update notes on this)
-    // TODO: Add Retrofit instead of HttpURLConnection. (learning opportunity)
     // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
     // TODO: Tablet layouts.
@@ -105,7 +104,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
     }
 
-    // TODO: Only use saveInstanceState() instead of shared preferences, when you figure out how.
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -119,25 +118,34 @@ public class StepDetailsActivity extends AppCompatActivity implements
 
     private void loadInterfaceComponents(){
 
+
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeJSONResults);
-        clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
-        String videoURL = clickedStep.getVideoURL();
 
-        TextView test = findViewById(R.id.test_text_view);
-        test.setText(clickedStep.getDescription());
+        // Check to make sure that the index doesn't get out of bounds when viewing different steps
+        if(clickedRecipeStepIndex < 0 ||
+                clickedRecipeStepIndex > recipeList.get(clickedRecipeIndex).getSteps().size() - 1){
+            finish();// kill this activity.
+        }else {
+
+            clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
+            String videoURL = clickedStep.getVideoURL();
+
+            TextView test = findViewById(R.id.test_text_view);
+            test.setText(clickedStep.getDescription());
 
 
-        // Initialize the media player view.
-        mPlayerView = findViewById(R.id.simple_exo_view);
-        mPlayerView.setVisibility(View.VISIBLE);
-        noVideoMessage.setVisibility(View.GONE);
+            // Initialize the media player view.
+            mPlayerView = findViewById(R.id.simple_exo_view);
+            mPlayerView.setVisibility(View.VISIBLE);
+            noVideoMessage.setVisibility(View.GONE);
 
-        if(videoURL.equals("")){
-            mPlayerView.setVisibility(View.GONE);
-            noVideoMessage.setVisibility(View.VISIBLE);
+            if (videoURL.equals("")) {
+                mPlayerView.setVisibility(View.GONE);
+                noVideoMessage.setVisibility(View.VISIBLE);
+            }
+
+            initializeMediaPlayer(Uri.parse(videoURL));
         }
-
-        initializeMediaPlayer(Uri.parse(videoURL));
     }
 
 
@@ -154,8 +162,6 @@ public class StepDetailsActivity extends AppCompatActivity implements
     }
 
 
-    // TODO: Fix the issue, if you click previous button from video 1 it crashes.
-    // TODO: Fix the issue, if you click next button on last step, the app crashes.
     /**
      * Initialize ExoPlayer.
      * @param mediaUri The URI of the sample to play.
