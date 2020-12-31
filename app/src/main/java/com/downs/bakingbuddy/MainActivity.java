@@ -4,22 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.IdlingResource;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.downs.bakingbuddy.IdlingResource.SimpleIdlingResource;
 import com.downs.bakingbuddy.model.Recipe;
 import com.downs.bakingbuddy.utilities.JsonUtils;
 import com.downs.bakingbuddy.utilities.NetworkUtils;
@@ -37,9 +29,6 @@ public class MainActivity extends AppCompatActivity
     private Activity activityContext = this;
     private String myRecipeSearchResultsJSON;
 
-    // The Idling Resource which will be null in production, but not for testing.
-//    @Nullable
-//    private SimpleIdlingResource mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +59,6 @@ public class MainActivity extends AppCompatActivity
         makeRecipeSearchQuery();
 
 
-        // Get the IdlingResource instance
-        // getIdlingResource();
     }
 
     @Override
@@ -173,17 +160,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
-     */
-//    @VisibleForTesting
-//    @NonNull
-//    public IdlingResource getIdlingResource() {
-//        if (mIdlingResource == null) {
-//            mIdlingResource = new SimpleIdlingResource();
-//        }
-//        return mIdlingResource;
-//    }
 
 
 

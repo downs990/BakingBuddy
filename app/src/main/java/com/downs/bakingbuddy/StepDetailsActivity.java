@@ -66,7 +66,6 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private TextView noVideoMessage;
 
 
-    // TODO: Add Espresso UI testing.
     // TODO: Required to add data binding. (third-party library) also (update notes on this)
     // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
@@ -233,7 +232,6 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private void releasePlayer() {
 
         // Before releasing the player you must save the position and the state.
-        // TODO: Add this solution to your Google drive notes.
         if(mExoPlayer != null){
             playerState = mExoPlayer.getPlayWhenReady();
             playerPosition = mExoPlayer.getCurrentPosition();
