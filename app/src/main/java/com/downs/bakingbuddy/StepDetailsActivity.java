@@ -70,6 +70,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
     // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
     // TODO: Tablet layouts.
+    // TODO: Accessibility features.
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
