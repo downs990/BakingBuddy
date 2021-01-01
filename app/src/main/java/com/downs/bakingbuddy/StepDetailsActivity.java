@@ -67,8 +67,8 @@ public class StepDetailsActivity extends AppCompatActivity implements
     ActivityStepDetailsBinding mBinding;
 
 
-    // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
+    // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
     // TODO: Tablet layouts.
     // TODO: Accessibility features.
     @Override
