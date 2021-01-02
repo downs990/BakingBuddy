@@ -62,13 +62,10 @@ public class StepDetailsActivity extends AppCompatActivity implements
     private String SAVED_STEP_INDEX = "saved_recipe_step_index";
     private String SAVED_RECIPE_INDEX = "saved_recipe_index";
 
-
-//    private TextView noVideoMessage;
     ActivityStepDetailsBinding mBinding;
 
 
-    // TODO: Build the widget after reviewing the videos and code. (update the notes for widgets).
-    // TODO: Review all code in garden app (helpful for widget and Broadcast, and Services, and project structure)
+    // TODO: Review videos, notes, code for widgets. (garden app)
     // TODO: Tablet layouts.
     // TODO: Accessibility features.
     @Override
@@ -259,8 +256,7 @@ public class StepDetailsActivity extends AppCompatActivity implements
         }
 
         mExoPlayer = null;
-        // TODO: Add this???     mMediaSession.setActive(false);
-
+        // mMediaSession.setActive(false); // Need this ??
     }
 
 
