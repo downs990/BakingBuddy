@@ -16,6 +16,8 @@ This is the 4th project in the online course "Udacity Android Development Nanode
 - Data binding
 - Tablet layout files 
 - Building custom widget
+- Localization features 
+- Accessibility features 
 
 
 # Screenshots
