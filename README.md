@@ -10,9 +10,9 @@ This is the 4th project in the online course "Udacity Android Development Nanode
 
 # Screenshots
  -----------
+<img width="45%" src="./github/10.jpg"/>
 <img width="45%" src="./github/30.jpg"/>
 <img width="45%" src="./github/20.jpg"/>
-<img width="45%" src="./github/10.jpg"/>
 <img width="45%" src="./github/40.jpg"/>
 
 
