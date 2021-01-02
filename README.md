@@ -3,10 +3,20 @@
 This is the 4th project in the online course "Udacity Android Development Nanodegree", this project was written from scratch using skills learned from the advanced modules of the course)
 
 **Features**
-- Read Baking Recipes
-- Stream Video and Audio from the web
-- Tablet layout
-- Widget 
+- Read Baking Recipes  
+- Stream Video and Audio from the web  
+- Compatible with Tablets 
+- Home screen widget
+ 
+
+**Skills Learned**
+- ExoPlayer
+- HttpURLConnection
+- Espresso UI testing 
+- Data binding
+- Tablet layout files 
+- Building custom widget
+
 
 # Screenshots
  -----------
