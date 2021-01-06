@@ -44,7 +44,7 @@ public class MainActivityScreenTest {
      * with the correct details.
      */
     @Test
-    public void clickRecyclerViewItem_OpensRecipeDetailsActivity() {
+    public void clickRecyclerViewItem_OpensDetailsActivity() {
 
         // IMPORTANT: *******************************************************
         // If the run device is in lock mode, and/or activity inactive,
@@ -52,6 +52,7 @@ public class MainActivityScreenTest {
         // Make sure your device is unlocked and app/test is able to run in foreground!
         // ******************************************************************
 
+        // TODO: Run this test again to see if it still works now with the fragments added.
 
         // Click the first item in the RecyclerView.
         onView(withId(R.id.recycler_view))

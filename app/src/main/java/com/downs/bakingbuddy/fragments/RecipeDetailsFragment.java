@@ -1,20 +1,31 @@
-package com.downs.bakingbuddy;
+package com.downs.bakingbuddy.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.downs.bakingbuddy.R;
+import com.downs.bakingbuddy.RecipeStepAdapter;
 import com.downs.bakingbuddy.model.Ingredient;
 import com.downs.bakingbuddy.model.Recipe;
 import com.downs.bakingbuddy.model.Step;
 import com.downs.bakingbuddy.utilities.JsonUtils;
+
 import java.util.ArrayList;
 
-public class RecipeDetailsActivity extends AppCompatActivity implements RecipeStepAdapter.ListItemClickListener {
+public class RecipeDetailsFragment extends Fragment
+    implements RecipeStepAdapter.ListItemClickListener{
+
 
     private TextView ingredientsTextView;
     private RecyclerView recipeStepRecyclerView;
@@ -25,23 +36,29 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
     private ArrayList<Step> allSteps = new ArrayList<>();
 
+
+    public RecipeDetailsFragment(){
+
+    }
+
+
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_details);
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+
+
+        recipeSearchResults = getArguments().getString("recipe_json_results");
+        recipeClickedIndex = getArguments().getInt("recipe_clicked_index");
 
 
 
 
-        ingredientsTextView = findViewById(R.id.recipe_ingredients_tv);
-        recipeStepRecyclerView = findViewById(R.id.recipe_step_descriptions_rv);
+        View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
 
-        Intent intent = getIntent();
-        if(intent != null){
-            recipeSearchResults = intent.getStringExtra("recipe_json_results");
-            recipeClickedIndex = intent.getIntExtra("recipe_clicked_index", 0);
-
-        }
+        ingredientsTextView = rootView.findViewById(R.id.recipe_ingredients_tv);
+        recipeStepRecyclerView = rootView.findViewById(R.id.recipe_step_descriptions_rv);
 
 
 
@@ -55,27 +72,32 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
         allSteps = recipeList.get(recipeClickedIndex).getSteps();
 
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         recipeStepRecyclerView.setLayoutManager(layoutManager);
 
-        recipeStepAdapter = new RecipeStepAdapter(listenerContext, this, allSteps);
+        recipeStepAdapter = new RecipeStepAdapter(listenerContext, this.getActivity(), allSteps);
         recipeStepRecyclerView.setAdapter(recipeStepAdapter);
 
 
         String clickedRecipeName = recipeList.get(recipeClickedIndex).getName();
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         toolbar.setTitle(clickedRecipeName);
-        setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
+        return rootView;
+
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-        Intent intent = new Intent(RecipeDetailsActivity.this, StepDetailsActivity.class);
-        intent.putExtra("recipe_json_results",  recipeSearchResults);
-        intent.putExtra("clicked_recipe_step_index", clickedItemIndex);
-        intent.putExtra("clicked_recipe_index", recipeClickedIndex);
-        startActivity(intent);
+
+        // TODO: Fragment transition.
+//        Intent intent = new Intent(RecipeDetailsFragment.this, RecipeStepDetailsFragment.class);
+//        intent.putExtra("recipe_json_results",  recipeSearchResults);
+//        intent.putExtra("clicked_recipe_step_index", clickedItemIndex);
+//        intent.putExtra("clicked_recipe_index", recipeClickedIndex);
+//        startActivity(intent);
 
     }
 
@@ -91,4 +113,5 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeSt
 
         return output;
     }
+
 }

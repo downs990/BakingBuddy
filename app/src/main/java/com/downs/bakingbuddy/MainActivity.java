@@ -86,17 +86,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-        if (mToast != null) {
-            mToast.cancel();
-        }
 
 
-//        mToast = Toast.makeText(this, "index: "+clickedItemIndex, Toast.LENGTH_LONG);
-//        mToast.show();
-
-
-
-        Intent intent = new Intent(MainActivity.this, RecipeDetailsActivity.class);
+        Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
         intent.putExtra("recipe_json_results", myRecipeSearchResultsJSON);
         intent.putExtra("recipe_clicked_index", clickedItemIndex);
         startActivity(intent);

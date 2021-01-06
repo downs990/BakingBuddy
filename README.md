@@ -14,7 +14,8 @@ This is the 4th project in the online course "Udacity Android Development Nanode
 - HttpURLConnection
 - Espresso UI testing 
 - Data binding
-- Tablet layout files 
+- Tablet layout files
+- Fragments
 - Building custom widget
 - Localization features 
 - Accessibility features 
