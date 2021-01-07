@@ -27,18 +27,6 @@
 
 
         <activity
-            android:name=".StepDetailsActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.STEP_DETAILS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-
-        <activity
             android:name=".DetailsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">

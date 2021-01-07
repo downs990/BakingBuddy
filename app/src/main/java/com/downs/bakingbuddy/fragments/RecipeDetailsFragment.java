@@ -1,5 +1,6 @@
 package com.downs.bakingbuddy.fragments;
 
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,9 +51,11 @@ public class RecipeDetailsFragment extends Fragment
                              @Nullable Bundle savedInstanceState) {
 
 
-        recipeSearchResults = getArguments().getString("recipe_json_results");
-        recipeClickedIndex = getArguments().getInt("recipe_clicked_index");
-
+        Bundle extrasBundle = getArguments();
+        if(extrasBundle.isEmpty() == false) {
+            recipeSearchResults = extrasBundle.getString("recipe_json_results");
+            recipeClickedIndex = extrasBundle.getInt("recipe_clicked_index");
+        }
 
 
 
@@ -91,13 +95,19 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
+        // Fragment transition.
+        Bundle bundle = new Bundle();
+        bundle.putString("recipe_json_results", recipeSearchResults);
+        bundle.putInt("clicked_recipe_step_index", clickedItemIndex);
+        bundle.putInt("clicked_recipe_index", recipeClickedIndex);
 
-        // TODO: Fragment transition.
-//        Intent intent = new Intent(RecipeDetailsFragment.this, RecipeStepDetailsFragment.class);
-//        intent.putExtra("recipe_json_results",  recipeSearchResults);
-//        intent.putExtra("clicked_recipe_step_index", clickedItemIndex);
-//        intent.putExtra("clicked_recipe_index", recipeClickedIndex);
-//        startActivity(intent);
+        RecipeStepDetailsFragment recipeDetailsFragment = new RecipeStepDetailsFragment();
+        recipeDetailsFragment.setArguments(bundle);
+
+        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
+        transaction.replace(R.id.details_container, ((Fragment)recipeDetailsFragment));
+        transaction.commit();
+
 
     }
 
