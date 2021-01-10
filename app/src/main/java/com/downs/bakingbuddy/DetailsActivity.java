@@ -1,12 +1,19 @@
 package com.downs.bakingbuddy;
 
+
+
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
+
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.downs.bakingbuddy.fragments.RecipeDetailsFragment;
 import com.downs.bakingbuddy.fragments.RecipeStepDetailsFragment;
@@ -16,6 +23,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private String recipeSearchResults = "";
     private int recipeClickedIndex = -1;
+    private boolean isTwoPane = false;
 
 
     @Override
@@ -35,29 +43,46 @@ public class DetailsActivity extends AppCompatActivity {
         FrameLayout fragment2 = findViewById(R.id.details_section_two_container);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        if(fragment2 != null){
-            Bundle bundle2 = new Bundle();
-            bundle2.putString("recipe_json_results", recipeSearchResults);
-            bundle2.putInt("clicked_recipe_step_index", 0);
-            bundle2.putInt("clicked_recipe_index", recipeClickedIndex);
+        if(fragment2 != null) {
+
+            switch (getResources().getConfiguration().orientation) {
+                case Configuration
+                        .ORIENTATION_PORTRAIT:
+
+                    isTwoPane = false;
+//                Toast.makeText(getBaseContext(), "PORTRAIT", Toast.LENGTH_LONG).show();
+                    break;
+                case Configuration.ORIENTATION_LANDSCAPE:
+
+                    isTwoPane = true;
+//                Toast.makeText(getBaseContext(), "LAND", Toast.LENGTH_LONG).show();
+
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putString("recipe_json_results", recipeSearchResults);
+                    bundle2.putInt("clicked_recipe_step_index", 0);
+                    bundle2.putInt("clicked_recipe_index", recipeClickedIndex);
 
 
-            RecipeStepDetailsFragment recipeStepDetailsFragment = new RecipeStepDetailsFragment();
-            recipeStepDetailsFragment.setArguments(bundle2);
+                    RecipeStepDetailsFragment recipeStepDetailsFragment = new RecipeStepDetailsFragment();
+                    recipeStepDetailsFragment.setArguments(bundle2);
 
-            fragmentManager.beginTransaction().add(R.id.details_section_two_container, recipeStepDetailsFragment)
-                    .commit();
+                    fragmentManager.beginTransaction().add(R.id.details_section_two_container, recipeStepDetailsFragment)
+                            .commit();
+
+
+                    break;
+                default:
+                    break;
+            }
         }
 
 
-        // TODO: Fix tablet layout issue.
-        //      java.lang.IllegalArgumentException: No view found for id 0x7f080089 (com.downs.bakingbuddy:id/details_container) for fragment RecipeDetailsFragment{4e6b6f3}
         Bundle bundle = new Bundle();
         bundle.putString("recipe_json_results", recipeSearchResults);
         bundle.putInt("recipe_clicked_index", recipeClickedIndex);
 
 
-        RecipeDetailsFragment recipeDetailsFragment = new RecipeDetailsFragment();
+        RecipeDetailsFragment recipeDetailsFragment = new RecipeDetailsFragment(isTwoPane);
         recipeDetailsFragment.setArguments(bundle);
 
 
@@ -65,8 +90,32 @@ public class DetailsActivity extends AppCompatActivity {
                 .commit();
 
 
-
-
     }
 
+
+    // TODO: Fix error. On phone after selecting a step and viewing the video,
+    //    if you click that phone back button, the app crashes.
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Clean up fragments so that they don't just keep getting added on top of each other.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        RecipeDetailsFragment masterListFragment = (RecipeDetailsFragment) fragmentManager
+                .findFragmentById(R.id.details_container);
+
+        RecipeStepDetailsFragment detailsFragment = (RecipeStepDetailsFragment) fragmentManager
+                .findFragmentById(R.id.details_section_two_container);
+
+
+        // NOTE: DON'T try to merge these if statements later.
+        if(masterListFragment != null){
+            getSupportFragmentManager().beginTransaction().remove(masterListFragment).commit();
+        }
+        if(detailsFragment != null){
+            getSupportFragmentManager().beginTransaction().remove(detailsFragment).commit();
+        }
+
+    }
 }

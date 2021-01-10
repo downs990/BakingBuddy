@@ -10,13 +10,11 @@
         android:id="@+id/details_container"
         android:layout_width="400dp"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
         />
     <FrameLayout
         android:id="@+id/details_section_two_container"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
         />
 
 </LinearLayout>

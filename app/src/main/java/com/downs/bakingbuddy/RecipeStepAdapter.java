@@ -29,7 +29,7 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Re
     private static final String TAG = RecipeStepAdapter.class.getSimpleName();
 
     final private ListItemClickListener mOnClickListener;
-    private static int viewHolderCount;
+    private int viewHolderCount;
     private ArrayList<Step> recipeStepList;
     private Activity mActivityContext;
 

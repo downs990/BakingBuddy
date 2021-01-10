@@ -35,6 +35,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -52,9 +53,9 @@ public class RecipeStepDetailsFragment extends Fragment implements
 
     private static MediaSession mMediaSession;
     private PlaybackState.Builder mStateBuilder;
+    private TextView noVideoMessage;
 
-
-    //private SimpleExoPlayerView mPlayerView; // Media Controller
+    private SimpleExoPlayerView mPlayerView; // Media Controller
     private SimpleExoPlayer mExoPlayer;// Media Player
 
     private boolean playerState;
@@ -65,11 +66,16 @@ public class RecipeStepDetailsFragment extends Fragment implements
     private String SAVED_STEP_INDEX = "saved_recipe_step_index";
     private String SAVED_RECIPE_INDEX = "saved_recipe_index";
 
-    FragmentStepDetailsBinding mBinding;
+    // TODO: Fix data binding. (test on phone and tablet)
+
 
     // TODO: Review videos, notes, code for widgets. (garden app)
-    // TODO: Tablet layouts.
     // TODO: Accessibility features.
+
+//    FragmentStepDetailsBinding mBinding;
+
+
+    // NOTE: Empty constructor always required for fragment.
     public RecipeStepDetailsFragment(){
 
     }
@@ -82,7 +88,8 @@ public class RecipeStepDetailsFragment extends Fragment implements
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
+       final View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
+       // View rootView = DataBindingUtil.inflate(inflater, R.layout.fragment_step_details, container, false).getRoot();
 
 
         sharedPref = this.getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -92,7 +99,7 @@ public class RecipeStepDetailsFragment extends Fragment implements
          * DataBindingUtil also created our ActivityStepDetailsBinding that we will eventually use to
          * display all of our data.
          */
-        mBinding = DataBindingUtil.setContentView(this.getActivity(), R.layout.fragment_step_details);
+//        mBinding = DataBindingUtil.setContentView(this.getActivity(), R.layout.fragment_step_details);
 
 
         Bundle extrasBundle = getArguments();
@@ -109,20 +116,20 @@ public class RecipeStepDetailsFragment extends Fragment implements
         }
 
 
-        mBinding.prevStepTv.setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.prev_step_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickedRecipeStepIndex = clickedRecipeStepIndex - 1;
-                loadInterfaceComponents();
+                loadInterfaceComponents(rootView);
 
             }
         });
 
-        mBinding.nextStepTv.setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.next_step_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickedRecipeStepIndex = clickedRecipeStepIndex + 1;
-                loadInterfaceComponents();
+                loadInterfaceComponents(rootView);
             }
         });
 
@@ -132,7 +139,7 @@ public class RecipeStepDetailsFragment extends Fragment implements
         initializeMediaSession();
 
         // Populate text and video.
-        loadInterfaceComponents();
+        loadInterfaceComponents(rootView);
         return rootView;
     }
 
@@ -149,7 +156,7 @@ public class RecipeStepDetailsFragment extends Fragment implements
 
     }
 
-    private void loadInterfaceComponents(){
+    private void loadInterfaceComponents(View rootView){
 
 
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeJSONResults);
@@ -163,19 +170,20 @@ public class RecipeStepDetailsFragment extends Fragment implements
             clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
             String videoURL = clickedStep.getVideoURL();
 
-//            TextView test = findViewById(R.id.test_text_view);
-            mBinding.testTextView.setText(clickedStep.getDescription());
+            TextView test = rootView.findViewById(R.id.test_text_view);// TODO: test ? rename/remove ?
+            test.setText(clickedStep.getDescription());
 
 
             // Initialize the media player view.
-//            mPlayerView = findViewById(R.id.simple_exo_view);
-//            noVideoMessage = findViewById(R.id.no_video_tv);
-            mBinding.simpleExoView.setVisibility(View.VISIBLE);
-            mBinding.noVideoTv.setVisibility(View.GONE);
+            mPlayerView = rootView.findViewById(R.id.simple_exo_view);
+            noVideoMessage = rootView.findViewById(R.id.no_video_tv);
+
+            mPlayerView.setVisibility(View.VISIBLE);
+            noVideoMessage.setVisibility(View.GONE);
 
             if (videoURL.equals("")) {
-                mBinding.simpleExoView.setVisibility(View.GONE);
-                mBinding.noVideoTv.setVisibility(View.VISIBLE);
+                mPlayerView.setVisibility(View.GONE);
+                noVideoMessage.setVisibility(View.VISIBLE);
             }
 
             initializeMediaPlayer(Uri.parse(videoURL));
@@ -195,7 +203,7 @@ public class RecipeStepDetailsFragment extends Fragment implements
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(this.getContext(), trackSelector, loadControl);
-            mBinding.simpleExoView.setPlayer(mExoPlayer);
+            mPlayerView.setPlayer(mExoPlayer);
             mExoPlayer.addListener(this);
 
             // Prepare the MediaSource.
