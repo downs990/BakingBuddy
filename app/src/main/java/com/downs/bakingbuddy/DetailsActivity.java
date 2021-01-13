@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -93,8 +94,6 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
 
-    // TODO: Fix error. On phone after selecting a step and viewing the video,
-    //    if you click that phone back button, the app crashes.
     @Override
     protected void onPause() {
         super.onPause();
@@ -102,7 +101,7 @@ public class DetailsActivity extends AppCompatActivity {
         // Clean up fragments so that they don't just keep getting added on top of each other.
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        RecipeDetailsFragment masterListFragment = (RecipeDetailsFragment) fragmentManager
+        Fragment masterListFragment = fragmentManager
                 .findFragmentById(R.id.details_container);
 
         RecipeStepDetailsFragment detailsFragment = (RecipeStepDetailsFragment) fragmentManager

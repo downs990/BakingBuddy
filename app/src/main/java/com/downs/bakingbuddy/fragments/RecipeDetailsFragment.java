@@ -27,7 +27,7 @@ import com.downs.bakingbuddy.utilities.JsonUtils;
 import java.util.ArrayList;
 
 public class RecipeDetailsFragment extends Fragment
-    implements RecipeStepAdapter.ListItemClickListener{
+        implements RecipeStepAdapter.ListItemClickListener {
 
 
     private TextView ingredientsTextView;
@@ -44,28 +44,27 @@ public class RecipeDetailsFragment extends Fragment
 
 
     // NOTE: Empty constructor always required for fragment.
-    public RecipeDetailsFragment(){
+    public RecipeDetailsFragment() {
 
     }
 
 
-    public RecipeDetailsFragment(boolean isTwoPane){
+    public RecipeDetailsFragment(boolean isTwoPane) {
         this.isTwoPane = isTwoPane;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
 
-            if(isTwoPane){
+            if (isTwoPane) {
                 // Make master list fragment half of screen.
                 ViewGroup.LayoutParams params = containerView.getLayoutParams();
                 params.width = 700;
                 containerView.setLayoutParams(params);
 
-            }else{
+            } else {
                 // Make master list fragment hull screen.
                 ViewGroup.LayoutParams params = containerView.getLayoutParams();
                 params.width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -85,11 +84,10 @@ public class RecipeDetailsFragment extends Fragment
 
 
         Bundle extrasBundle = getArguments();
-        if(extrasBundle.isEmpty() == false) {
+        if (extrasBundle.isEmpty() == false) {
             recipeSearchResults = extrasBundle.getString("recipe_json_results");
             recipeClickedIndex = extrasBundle.getInt("recipe_clicked_index");
         }
-
 
 
         View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
@@ -98,7 +96,6 @@ public class RecipeDetailsFragment extends Fragment
 
         ingredientsTextView = rootView.findViewById(R.id.recipe_ingredients_tv);
         recipeStepRecyclerView = rootView.findViewById(R.id.recipe_step_descriptions_rv);
-
 
 
         ArrayList<Recipe> recipeList = JsonUtils.parseRecipeJson(recipeSearchResults);
@@ -119,7 +116,7 @@ public class RecipeDetailsFragment extends Fragment
         String clickedRecipeName = recipeList.get(recipeClickedIndex).getName();
         Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         toolbar.setTitle(clickedRecipeName);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         return rootView;
 
@@ -128,32 +125,34 @@ public class RecipeDetailsFragment extends Fragment
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
+        Bundle bundle = new Bundle();
+        bundle.putString("recipe_json_results", recipeSearchResults);
+        bundle.putInt("clicked_recipe_step_index", clickedItemIndex);
+        bundle.putInt("clicked_recipe_index", recipeClickedIndex);
 
-        if(isTwoPane == false) {
+        RecipeStepDetailsFragment recipeStepDetailsFragment = new RecipeStepDetailsFragment();
+        recipeStepDetailsFragment.setArguments(bundle);
+
+        FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
+
+
+        if (isTwoPane == false) {
             // Fragment transition.
-            Bundle bundle = new Bundle();
-            bundle.putString("recipe_json_results", recipeSearchResults);
-            bundle.putInt("clicked_recipe_step_index", clickedItemIndex);
-            bundle.putInt("clicked_recipe_index", recipeClickedIndex);
+            transaction.replace(R.id.details_container, recipeStepDetailsFragment);
 
-            RecipeStepDetailsFragment recipeDetailsFragment = new RecipeStepDetailsFragment();
-            recipeDetailsFragment.setArguments(bundle);
+        } else {
+            transaction.replace(R.id.details_section_two_container, recipeStepDetailsFragment);
 
-            FragmentTransaction transaction = this.getParentFragmentManager().beginTransaction();
-            transaction.replace(R.id.details_container, ((Fragment) recipeDetailsFragment));
-            transaction.commit();
-        }else{
-            // TODO: Add click logic for two pane tablet layout.
-            //      Go over adding interface class for sending data between fragments.
         }
+        transaction.commit();
 
     }
 
-    private String ingredientsToPrettyPrint(ArrayList<Ingredient> currentIngredients){
+    private String ingredientsToPrettyPrint(ArrayList<Ingredient> currentIngredients) {
         String output = "";
-        for(Ingredient ing : currentIngredients){
+        for (Ingredient ing : currentIngredients) {
             String measure = ing.getMeasure();
-            if(measure.equals("UNIT")){
+            if (measure.equals("UNIT")) {
                 measure = "";
             }
             output += "   - " + ing.getQuantity() + " " + measure + " " + ing.getIngredient() + "\n\n";
