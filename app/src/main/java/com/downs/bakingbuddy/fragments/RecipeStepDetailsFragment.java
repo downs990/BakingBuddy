@@ -67,12 +67,10 @@ public class RecipeStepDetailsFragment extends Fragment implements
     private String SAVED_RECIPE_INDEX = "saved_recipe_index";
 
     // TODO: Fix data binding. (test on phone and tablet)
-
-
     // TODO: Review videos, notes, code for widgets. (garden app)
     // TODO: Accessibility features.
 
-//    FragmentStepDetailsBinding mBinding;
+    FragmentStepDetailsBinding mBinding;
 
 
     // NOTE: Empty constructor always required for fragment.
@@ -88,8 +86,9 @@ public class RecipeStepDetailsFragment extends Fragment implements
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-       final View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
-       // View rootView = DataBindingUtil.inflate(inflater, R.layout.fragment_step_details, container, false).getRoot();
+       // final View rootView = inflater.inflate(R.layout.fragment_step_details, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_step_details, container, false);
+        final View rootView = mBinding.getRoot();
 
 
         sharedPref = this.getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -170,8 +169,8 @@ public class RecipeStepDetailsFragment extends Fragment implements
             clickedStep = recipeList.get(clickedRecipeIndex).getSteps().get(clickedRecipeStepIndex);
             String videoURL = clickedStep.getVideoURL();
 
-            TextView test = rootView.findViewById(R.id.test_text_view);// TODO: test ? rename/remove ?
-            test.setText(clickedStep.getDescription());
+            TextView stepDescription = rootView.findViewById(R.id.step_description_tv);
+            stepDescription.setText(clickedStep.getDescription());
 
 
             // Initialize the media player view.
@@ -180,10 +179,14 @@ public class RecipeStepDetailsFragment extends Fragment implements
 
             mPlayerView.setVisibility(View.VISIBLE);
             noVideoMessage.setVisibility(View.GONE);
+//            mBinding.simpleExoView.setVisibility(View.VISIBLE);
+//            mBinding.noVideoTv.setVisibility(View.GONE);
 
             if (videoURL.equals("")) {
                 mPlayerView.setVisibility(View.GONE);
                 noVideoMessage.setVisibility(View.VISIBLE);
+//                mBinding.simpleExoView.setVisibility(View.GONE);
+//                mBinding.noVideoTv.setVisibility(View.VISIBLE);
             }
 
             initializeMediaPlayer(Uri.parse(videoURL));
